@@ -1,0 +1,59 @@
+body {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.app-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #f9f9f9;
+}
+
+.number-box {
+    border: 2px solid #333;
+    border-radius: 8px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.grid button {
+    font-size: 24px;
+    padding: 12px;
+}
+
+.grid button.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.toggle-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.toggle-buttons button {
+    flex: 1;
+    margin: 0 4px;
+    font-size: 18px;
+    padding: 10px;
+}
+
+.roll-button {
+    width: 100%;
+    font-size: 24px;
+    padding: 12px;
+}

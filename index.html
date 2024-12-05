@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basix Roller</title>
+    <link rel="stylesheet" href="https://unpkg.com/milligram/dist/milligram.min.css">
+    <script defer src="https://unpkg.com/alpinejs@3.14.0/dist/cdn.min.js"></script>
+    <style>
+        body {
+            padding: 0;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 599px) {
+            body {
+                margin-top: calc((100vh - 725px) / 2);
+            }
+        }
+
+        .button:hover {
+            background: #007bff;
+        }
+
+        .app-container {
+            border: 1px solid #ddd;
+            padding: 16px;
+            background-color: #f9f9f9;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            min-width: 40px;
+            min-height: 60px;
+            background-color: white;
+            font-size: 18px;
+            font-weight: bold;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        .box.success {
+            background-color: green;
+        }
+
+        .box.fail {
+            background-color: red;
+        }
+
+        .box.critical {
+            background-color: gold;
+            color: black;
+        }
+
+        .box .label {
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: lighter;
+            color: #555;
+        }
+
+        .total-row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 150px;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            color: #0089f8;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            padding: 16px;
+            position: relative;
+            margin-bottom: 20px;
+            margin-top: 40px;
+        }
+
+        .total-row .successes {
+            font-size: 60px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .critical-highlight {
+            position: absolute;
+            bottom: 4px;
+            font-size: 16px;
+            color: #343433;
+            text-align: center;
+            background: #e9be00;
+            padding: 2px;
+            border-radius: 5px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .grid button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            padding: 10px;
+            background-color: white;
+            border: 2px solid #ccc;
+            color: black;
+            font-weight: bold;
+            border-radius: 4px;
+            min-height: 80px;
+        }
+
+        .grid button.active {
+            background-color: green;
+            color: white;
+            border-color: green;
+        }
+
+        .toggle-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .toggle-buttons button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            margin: 0 4px;
+            font-size: 16px;
+            padding: 10px;
+            background-color: white;
+            border: 2px solid #ccc;
+            font-weight: bold;
+            border-radius: 4px;
+            color: black;
+            position: relative;
+            min-height: 40px;
+        }
+
+        .toggle-buttons button.active {
+            background-color: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .toggle-buttons button.active::after {
+            content: '✔';
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: white;
+        }
+
+        .roll-button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            font-size: 16px;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            min-height: 60px;
+        }
+
+        .skill-modifier-container {
+            display: block;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .skill-modifier-label {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .bottom-section {
+        }
+    </style>
+</head>
+<body>
+<div class="app-container" x-data="diceRoller">
+    <!-- Title -->
+    <div class="title">Basix Roller</div>
+
+    <!-- Top Row -->
+    <div class="top-row">
+        <template x-for="(value, index) in numbers" :key="index">
+            <div
+                    :class="{
+                        'box': true,
+                        'success': value >= 4 && (index !== 6 || value < 6),
+                        'fail': value !== undefined && value < 4,
+                        'critical': value === 6 && index === 6
+                    }"
+            >
+                <span class="label" x-text="index === 6 ? 'PRO' : index === 7 ? 'ADV' : ''"></span>
+                <span x-text="value !== undefined ? value : '-'"></span>
+            </div>
+        </template>
+    </div>
+
+    <!-- Total Row -->
+    <div class="total-row">
+        <span>Total Successes:</span>
+        <span x-show="criticalHit" class="critical-highlight">Critical!</span>
+        <span class="successes" x-text="totalSuccesses !== undefined ? totalSuccesses : '-'"></span>
+    </div>
+
+    <div class="bottom-section">
+        <div class="skill-modifier-container">
+            <div class="skill-modifier-label">Skill Modifier</div>
+            <!-- Button Grid -->
+            <div class="grid">
+                <template x-for="num in [1, 2, 3, 4, 5, 6]" :key="num">
+                    <button
+                            :class="{ 'active': numberSelected === num }"
+                            @click="selectNumber(num)"
+                            class="button"
+                            x-text="num"
+                    ></button>
+                </template>
+            </div>
+        </div>
+
+        <!-- Toggle Buttons -->
+        <div class="toggle-buttons">
+            <button
+                    :class="{ 'active': proficiencyEnabled }"
+                    @click="toggle('proficiencyEnabled')"
+            >
+                Proficiency
+            </button>
+            <button
+                    :class="{ 'active': advantageEnabled }"
+                    @click="toggle('advantageEnabled')"
+            >
+                Advantage
+            </button>
+        </div>
+
+        <!-- Roll Button -->
+        <button class="button roll-button" @click="roll">Roll</button>
+    </div>
+</div>
+
+<script>
+    const diceRoller = {
+        numberSelected: 3, // 3 is selected by default
+        proficiencyEnabled: false,
+        advantageEnabled: false,
+        totalSuccesses: undefined,
+        criticalHit: false,
+        numbers: Array(8).fill(undefined), // Ensure all 8 boxes are always visible
+
+        // Ensure a number is always selected
+        selectNumber(num) {
+            this.numberSelected = num;
+        },
+
+        // Toggle proficiency or advantage
+        toggle(key) {
+            this[key] = !this[key];
+        },
+
+        // Roll logic
+        roll() {
+            this.criticalHit = false;
+            let successes = 0;
+
+            // Roll the main dice
+            this.numbers = Array(8).fill(undefined); // Reset boxes
+            for (let i = 0; i < this.numberSelected; i++) {
+                const roll = Math.ceil(Math.random() * 6);
+                this.numbers[i] = roll;
+                if (roll >= 4) successes++;
+            }
+
+            // Roll the Proficiency die
+            if (this.proficiencyEnabled) {
+                const proRoll = Math.ceil(Math.random() * 6);
+                this.numbers[6] = proRoll;
+                if (proRoll >= 4) successes++;
+                if (proRoll === 6) this.criticalHit = true;
+            }
+
+            // Roll the Advantage die
+            if (this.advantageEnabled) {
+                const advRoll = Math.ceil(Math.random() * 6);
+                this.numbers[7] = advRoll;
+                if (advRoll >= 4) successes++;
+            }
+
+            // Update total successes
+            this.totalSuccesses = successes;
+            this.advantageEnabled = false; // Turn off Advantage after rolling
+        },
+    };
+</script>
+</body>
+</html>
