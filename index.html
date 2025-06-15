@@ -87,7 +87,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 150px;
+            height: 120px;
             background-color: #ffffff;
             border: 1px solid #ccc;
             color: #0089f8;
@@ -106,9 +106,23 @@
             margin: 0;
         }
 
+        .dead-label {
+            position: absolute;
+            right: -60px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .trauma-max {
+            color: #dc3545 !important;
+        }
+
         .critical-highlight {
             position: absolute;
-            bottom: 4px;
+            bottom: -14px;
             font-size: 16px;
             color: #343433;
             text-align: center;
@@ -119,7 +133,7 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 8px;
         }
 
@@ -127,14 +141,14 @@
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            font-size: 40px;
-            padding: 10px;
+            font-size: 32px;
+            padding: 8px;
             background-color: white;
             border: 2px solid #ccc;
             color: black;
             font-weight: bold;
             border-radius: 4px;
-            min-height: 80px;
+            min-height: 60px;
         }
 
         .grid button.active {
@@ -259,8 +273,8 @@
             <!-- Title -->
             <div class="title">Dice Roller</div>
             <!-- Top Row -->
-            <div class="top-row">
-                <template x-for="(value, index) in numbers" :key="index">
+            <div class="top-row" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;">
+                <template x-for="(value, index) in numbers.slice(0, 5)" :key="index">
                     <div
                             :class="{
                                 'box': true,
@@ -269,10 +283,46 @@
                                 'critical': value === 6 && index === 6
                             }"
                     >
-                        <span class="label" x-text="index === 6 ? 'EXP' : index === 7 ? 'ADV' : ''"></span>
+                        <span class="label"></span>
                         <span x-text="value !== undefined ? value : '-'" ></span>
                     </div>
                 </template>
+                <div
+                        :class="{
+                            'box': true,
+                            'success': numbers[10] >= 4 && numbers[10] < 6,
+                            'fail': numbers[10] !== undefined && numbers[10] < 4,
+                            'critical': numbers[10] === 6
+                        }"
+                >
+                    <span class="label">EXP</span>
+                    <span x-text="numbers[10] !== undefined ? numbers[10] : '-'" ></span>
+                </div>
+            </div>
+            <div class="top-row" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 8px;">
+                <template x-for="(value, index) in numbers.slice(5, 10)" :key="index + 5">
+                    <div
+                            :class="{
+                                'box': true,
+                                'success': value >= 4 && (index !== 6 || value < 6),
+                                'fail': value !== undefined && value < 4,
+                                'critical': value === 6 && index === 6
+                            }"
+                    >
+                        <span class="label"></span>
+                        <span x-text="value !== undefined ? value : '-'" ></span>
+                    </div>
+                </template>
+                <div
+                        :class="{
+                            'box': true,
+                            'success': numbers[11] >= 4,
+                            'fail': numbers[11] !== undefined && numbers[11] < 4
+                        }"
+                >
+                    <span class="label">ADV</span>
+                    <span x-text="numbers[11] !== undefined ? numbers[11] : '-'" ></span>
+                </div>
             </div>
             <!-- Total Row -->
             <div class="total-row">
@@ -282,10 +332,10 @@
             </div>
             <div class="bottom-section">
                 <div class="skill-modifier-container">
-                    <div class="skill-modifier-label">Skill Modifier</div>
+                    <div class="skill-modifier-label">Dice Count</div>
                     <!-- Button Grid -->
                     <div class="grid">
-                        <template x-for="num in [1, 2, 3, 4, 5, 6]" :key="num">
+                        <template x-for="num in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]" :key="num">
                             <button
                                     :class="{ 'active': numberSelected === num }"
                                     @click="selectNumber(num)"
@@ -336,7 +386,7 @@
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <label for="stat-vit" style="font-size: 12px; margin-bottom: 2px;">VIT</label>
                     <select id="stat-vit" x-model="vit" style="width: 44px;" class="stat-dropdown">
-                        <template x-for="n in 6" :key="n">
+                        <template x-for="n in 10" :key="n">
                             <option :value="n" x-text="n"></option>
                         </template>
                     </select>
@@ -344,7 +394,7 @@
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <label for="stat-dex" style="font-size: 12px; margin-bottom: 2px;">DEX</label>
                     <select id="stat-dex" x-model="dex" style="width: 44px;" class="stat-dropdown">
-                        <template x-for="n in 6" :key="n">
+                        <template x-for="n in 10" :key="n">
                             <option :value="n" x-text="n"></option>
                         </template>
                     </select>
@@ -352,7 +402,7 @@
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <label for="stat-per" style="font-size: 12px; margin-bottom: 2px;">PER</label>
                     <select id="stat-per" x-model="per" style="width: 44px;" class="stat-dropdown">
-                        <template x-for="n in 6" :key="n">
+                        <template x-for="n in 10" :key="n">
                             <option :value="n" x-text="n"></option>
                         </template>
                     </select>
@@ -360,7 +410,7 @@
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <label for="stat-int" style="font-size: 12px; margin-bottom: 2px;">INT</label>
                     <select id="stat-int" x-model="int" style="width: 44px;" class="stat-dropdown">
-                        <template x-for="n in 6" :key="n">
+                        <template x-for="n in 10" :key="n">
                             <option :value="n" x-text="n"></option>
                         </template>
                     </select>
@@ -368,7 +418,7 @@
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <label for="stat-cha" style="font-size: 12px; margin-bottom: 2px;">CHA</label>
                     <select id="stat-cha" x-model="cha" style="width: 44px;" class="stat-dropdown">
-                        <template x-for="n in 6" :key="n">
+                        <template x-for="n in 10" :key="n">
                             <option :value="n" x-text="n"></option>
                         </template>
                     </select>
@@ -376,7 +426,7 @@
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <label for="stat-wis" style="font-size: 12px; margin-bottom: 2px;">WIS</label>
                     <select id="stat-wis" x-model="wis" style="width: 44px;" class="stat-dropdown">
-                        <template x-for="n in 6" :key="n">
+                        <template x-for="n in 10" :key="n">
                             <option :value="n" x-text="n"></option>
                         </template>
                     </select>
@@ -385,19 +435,6 @@
             <!-- Tracker Section -->
             <div style="margin-bottom: 24px;">
                 <div style="display: flex; gap: 32px; flex-wrap: wrap; justify-content: center;">
-                    <!-- Hit Points -->
-                    <div style="display: flex; flex-direction: column; align-items: center; min-width: 200px;">
-                        <label style="font-size: 13px; margin-bottom: 2px;">Hit Points</label>
-                        <div style="display: flex; align-items: center; gap: 10px; justify-content: center;">
-                            <button type="button" class="button" style="padding: 2px 10px;" @click="hpCurrent = Math.max(0, hpCurrent - 1); saveStats()">-</button>
-                            <input type="number" min="0" :max="hpMax" x-model.number="hpCurrent" @input="hpCurrent = Math.max(0, Math.min(hpCurrent, hpMax)); saveStats()" style="width: 60px; text-align: center; font-size: 20px; font-weight: bold;" />
-                            <button type="button" class="button" style="padding: 2px 10px;" @click="hpCurrent = Math.min(hpMax, hpCurrent + 1); saveStats()">+</button>
-                            <span style="margin-left: 14px; display: flex; flex-direction: column; align-items: center; min-width: 48px;">
-                                <span style="font-size: 28px; font-weight: bold; color: #222; line-height: 1;"> <span x-text="hpMax"></span></span>
-                                <span style="font-size: 11px; color: #666;">Max</span>
-                            </span>
-                        </div>
-                    </div>
                     <!-- Stamina -->
                     <div style="display: flex; flex-direction: column; align-items: center; min-width: 200px;">
                         <label style="font-size: 13px; margin-bottom: 2px;">Stamina</label>
@@ -410,6 +447,20 @@
                                 <span style="font-size: 11px; color: #666;">Max</span>
                             </span>
                         </div>
+                    </div>
+                    <!-- Trauma -->
+                    <div style="display: flex; flex-direction: column; align-items: center; min-width: 200px; position: relative;">
+                        <label style="font-size: 13px; margin-bottom: 2px;">Trauma</label>
+                        <div style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+                            <button type="button" class="button" style="padding: 2px 10px;" @click="traumaCurrent = Math.max(0, traumaCurrent - 1); saveStats()">-</button>
+                            <input type="number" min="0" :max="traumaMax" x-model.number="traumaCurrent" @input="traumaCurrent = Math.max(0, Math.min(traumaCurrent, traumaMax)); saveStats()" :class="{ 'trauma-max': traumaCurrent === traumaMax }" style="width: 60px; text-align: center; font-size: 20px; font-weight: bold;" />
+                            <button type="button" class="button" style="padding: 2px 10px;" @click="traumaCurrent = Math.min(traumaMax, traumaCurrent + 1); saveStats()">+</button>
+                            <span style="margin-left: 14px; display: flex; flex-direction: column; align-items: center; min-width: 48px;">
+                                <span style="font-size: 28px; font-weight: bold; color: #222; line-height: 1;"> <span x-text="traumaMax"></span></span>
+                                <span style="font-size: 11px; color: #666;">Max</span>
+                            </span>
+                        </div>
+                        <span x-show="traumaCurrent === traumaMax" class="dead-label">Dead</span>
                     </div>
                     <!-- Focus -->
                     <div style="display: flex; flex-direction: column; align-items: center; min-width: 200px;">
@@ -448,7 +499,7 @@
                 <button class="button" style="flex: 1; background: #27ae60; color: white; font-weight: bold; font-size: 15px;" @click="staminaCurrent = staminaMax; saveStats();">
                     Rest
                 </button>
-                <button class="button" style="flex: 1; background: #2980ef; color: white; font-weight: bold; font-size: 15px;" @click="hpCurrent = hpMax; staminaCurrent = staminaMax; focusCurrent = focusMax; durabilityCurrent = durabilityMax; saveStats();">
+                <button class="button" style="flex: 1; background: #2980ef; color: white; font-weight: bold; font-size: 15px;" @click="staminaCurrent = staminaMax; traumaCurrent = 0; focusCurrent = focusMax; durabilityCurrent = durabilityMax; saveStats();">
                     Downtime
                 </button>
             </div>
@@ -467,8 +518,8 @@ function characterTracker() {
         advantageEnabled: false,
         totalSuccesses: undefined,
         criticalHit: false,
-        numbers: Array(8).fill(undefined),
-        hpCurrent: 0,
+        numbers: Array(12).fill(undefined),
+        traumaCurrent: 0,
         staminaCurrent: 0,
         focusCurrent: 0,
         durabilityCurrent: 0,
@@ -478,7 +529,7 @@ function characterTracker() {
     if (saved) {
         try {
             const parsed = JSON.parse(saved);
-            for (const k of ['vit','dex','per','int','cha','wis','level','hpCurrent','staminaCurrent','focusCurrent','durabilityCurrent','durabilityMax']) {
+            for (const k of ['vit','dex','per','int','cha','wis','level','traumaCurrent','staminaCurrent','focusCurrent','durabilityCurrent','durabilityMax']) {
                 if (parsed[k] !== undefined) stats[k] = Number(parsed[k]);
             }
             console.log('Loaded from localStorage:', parsed);
@@ -487,14 +538,25 @@ function characterTracker() {
         }
     }
     // Set current values to max if not already set
-    stats.hpCurrent = stats.hpCurrent > 0 ? stats.hpCurrent : stats.vit * stats.level;
-    stats.staminaCurrent = stats.staminaCurrent > 0 ? stats.staminaCurrent : stats.dex * stats.level;
-    stats.focusCurrent = stats.focusCurrent > 0 ? stats.focusCurrent : stats.wis * stats.level;
+    stats.traumaCurrent = stats.traumaCurrent > 0 ? stats.traumaCurrent : 0;
+    stats.staminaCurrent = stats.staminaCurrent > 0 ? stats.staminaCurrent : Math.ceil(stats.level / 2) + stats.dex;
+    stats.focusCurrent = stats.focusCurrent > 0 ? stats.focusCurrent : stats.wis;
     stats.durabilityCurrent = stats.durabilityCurrent > 0 ? stats.durabilityCurrent : stats.durabilityMax;
+
+    // Ensure values don't exceed their maximums
+    const traumaMax = Math.floor(stats.vit / 2 + stats.level / 2);
+    const staminaMax = Math.ceil(stats.level / 2) + stats.dex;
+    const focusMax = stats.wis;
+    
+    stats.traumaCurrent = Math.min(stats.traumaCurrent, traumaMax);
+    stats.staminaCurrent = Math.min(stats.staminaCurrent, staminaMax);
+    stats.focusCurrent = Math.min(stats.focusCurrent, focusMax);
+    stats.durabilityCurrent = Math.min(stats.durabilityCurrent, stats.durabilityMax);
+
     return {
         ...stats,
-        get hpMax() { return this.vit * this.level; },
-        get staminaMax() { return this.dex * this.level; },
+        get traumaMax() { return Math.floor(this.vit / 2 + this.level / 2); },
+        get staminaMax() { return Math.ceil(this.level / 2) + this.dex; },
         get focusMax() { return this.wis; },
         saveStats() {
             const statsToSave = {
@@ -505,7 +567,7 @@ function characterTracker() {
                 cha: this.cha,
                 wis: this.wis,
                 level: this.level,
-                hpCurrent: this.hpCurrent,
+                traumaCurrent: this.traumaCurrent,
                 staminaCurrent: this.staminaCurrent,
                 focusCurrent: this.focusCurrent,
                 durabilityCurrent: this.durabilityCurrent,
@@ -516,9 +578,9 @@ function characterTracker() {
         },
         // Watchers for each stat
         init() {
-            this.$watch('vit', () => { this.hpCurrent = this.hpMax; this.saveStats(); });
-            this.$watch('level', () => { this.hpCurrent = this.hpMax; this.staminaCurrent = this.staminaMax; this.focusCurrent = this.focusMax; this.saveStats(); });
-            this.$watch('dex', () => { this.staminaCurrent = this.staminaMax; this.saveStats(); });
+            this.$watch('vit', () => { this.traumaMax = Math.floor(this.vit / 2 + this.level / 2); this.saveStats(); });
+            this.$watch('level', () => { this.staminaCurrent = Math.ceil(this.level / 2) + this.dex; this.traumaMax = Math.floor(this.vit / 2 + this.level / 2); this.focusCurrent = this.focusMax; this.saveStats(); });
+            this.$watch('dex', () => { this.staminaCurrent = Math.ceil(this.level / 2) + this.dex; this.saveStats(); });
             this.$watch('wis', () => { this.focusCurrent = this.focusMax; this.saveStats(); });
             this.$watch('durabilityMax', () => { this.durabilityCurrent = Math.min(this.durabilityCurrent, this.durabilityMax); this.saveStats(); });
             this.$watch('vit', () => this.saveStats());
@@ -556,7 +618,7 @@ function characterTracker() {
             let successes = 0;
 
             // Roll the main dice
-            this.numbers = Array(8).fill(undefined); // Reset boxes
+            this.numbers = Array(12).fill(undefined); // Reset boxes
             for (let i = 0; i < this.numberSelected; i++) {
                 const roll = Math.ceil(Math.random() * 6);
                 this.numbers[i] = roll;
@@ -566,7 +628,7 @@ function characterTracker() {
             // Roll the Proficiency die
             if (this.proficiencyEnabled) {
                 const proRoll = Math.ceil(Math.random() * 6);
-                this.numbers[6] = proRoll;
+                this.numbers[10] = proRoll;
                 if (proRoll >= 4) successes++;
                 if (proRoll === 6) this.criticalHit = true;
             }
@@ -574,7 +636,7 @@ function characterTracker() {
             // Roll the Advantage die
             if (this.advantageEnabled) {
                 const advRoll = Math.ceil(Math.random() * 6);
-                this.numbers[7] = advRoll;
+                this.numbers[11] = advRoll;
                 if (advRoll >= 4) successes++;
             }
 
