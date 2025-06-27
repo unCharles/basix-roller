@@ -403,9 +403,9 @@
                             }"
                     >
                         <span class="label"></span>
-                        <div x-show="value !== undefined" :class="'dice-face dice-' + value">
-                            <template x-for="i in value" :key="i">
-                                <div class="dice-dot"></div>
+                        <div x-show="value !== undefined" class="dice-face">
+                            <template x-for="i in 9" :key="i">
+                                <div class="dice-dot" :style="{ opacity: (value !== undefined && diceDotMap[value]?.includes(i-1)) ? 1 : 0 }"></div>
                             </template>
                         </div>
                     </div>
@@ -423,9 +423,9 @@
                             }"
                     >
                         <span class="label"></span>
-                        <div x-show="value !== undefined" :class="'dice-face dice-' + value">
-                            <template x-for="i in value" :key="i">
-                                <div class="dice-dot"></div>
+                        <div x-show="value !== undefined" class="dice-face">
+                            <template x-for="i in 9" :key="i">
+                                <div class="dice-dot" :style="{ opacity: (value !== undefined && diceDotMap[value]?.includes(i-1)) ? 1 : 0 }"></div>
                             </template>
                         </div>
                     </div>
@@ -443,9 +443,9 @@
                         }"
                 >
                     <span class="label">EXP</span>
-                    <div x-show="numbers[10] !== undefined" :class="'dice-face dice-' + numbers[10]">
-                        <template x-for="i in numbers[10]" :key="i">
-                            <div class="dice-dot"></div>
+                    <div x-show="numbers[10] !== undefined" class="dice-face">
+                        <template x-for="i in 9" :key="i">
+                            <div class="dice-dot" :style="{ opacity: (numbers[10] !== undefined && diceDotMap[numbers[10]]?.includes(i-1)) ? 1 : 0 }"></div>
                         </template>
                     </div>
                 </div>
@@ -459,16 +459,16 @@
                             }"
                     >
                         <span class="label">ADV</span>
-                        <div x-show="numbers[10 + i] !== undefined" :class="'dice-face dice-' + numbers[10 + i]">
-                            <template x-for="i in numbers[10 + i]" :key="i">
-                                <div class="dice-dot"></div>
+                        <div x-show="numbers[10 + i] !== undefined" class="dice-face">
+                            <template x-for="j in 9" :key="j">
+                                <div class="dice-dot" :style="{ opacity: (numbers[10 + i] !== undefined && diceDotMap[numbers[10 + i]]?.includes(j-1)) ? 1 : 0 }"></div>
                             </template>
                         </div>
                     </div>
                 </template>
                 <!-- Empty boxes to fill the row -->
                 <template x-for="i in (5 - (numbers[10] !== undefined ? 1 : 0) - (numbers[11] !== undefined ? 1 : 0) - (numbers[12] !== undefined ? 1 : 0) - (numbers[13] !== undefined ? 1 : 0))" :key="'empty-' + i">
-                    <div class="box" style="background-color: transparent; border: 2px dashed #ccc;">
+                    <div class="box empty">
                         <span class="label"></span>
                         <span></span>
                     </div>
@@ -674,6 +674,15 @@
 
 <script>
 function characterTracker() {
+    // Dice dot positions for each face
+    const diceDotMap = {
+        1: [4],
+        2: [0, 8],
+        3: [0, 4, 8],
+        4: [0, 2, 6, 8],
+        5: [0, 2, 4, 6, 8],
+        6: [0, 2, 3, 5, 6, 8],
+    };
     // Load from localStorage or use defaults
     let stats = {
         vit: 3, dex: 3, per: 3, int: 3, cha: 3, wis: 3, level: 1,
@@ -720,6 +729,7 @@ function characterTracker() {
 
     return {
         ...stats,
+        diceDotMap,
         get traumaMax() { return Math.floor(this.vit / 2 + this.level / 2); },
         get staminaMax() { return Math.ceil(this.level / 2) + this.dex; },
         get focusMax() { return this.wis; },
